@@ -15,14 +15,18 @@ import type { RootStackParamList } from '../navigation/types';
 const BG_IMAGE = require('../assets/splash_bg.png');
 const CENTER_IMAGE = require('../assets/splash_center.png');
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Splash'>;
+type Props = NativeStackScreenProps<RootStackParamList, 'Splash'> & {
+  setWebViewUserAgent: (ua: string) => void;
+};
 
 const { width, height } = Dimensions.get('window');
 const isSmallScreen = height < 750;
 const loaderSize = isSmallScreen ? Math.min(width * 0.34, 120) : Math.min(width * 0.38, 150);
 const imageSize = isSmallScreen ? Math.min(width * 0.44, 180) : Math.min(width * 0.5, 220);
 
-export default function SplashScreen({ navigation }: Props) {
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+export default function SplashScreen({ navigation, setWebViewUserAgent }: Props) {
   const [showWeb, setShowWeb] = useState(true);
   const [showImage, setShowImage] = useState(false);
 
@@ -30,21 +34,6 @@ export default function SplashScreen({ navigation }: Props) {
   const imageScale = useRef(new Animated.Value(0.88)).current;
   const imageTranslateY = useRef(new Animated.Value(18)).current;
 
-  useEffect(() => {
-    //const firstTimer = setTimeout(() => {
-    //  setShowWeb(false);
-    //  setShowImage(true);
-    //}, 3000);
-//
-    //const secondTimer = setTimeout(() => {
-    //  navigation.replace('Onboarding');
-    //}, 6000);
-//
-    //return () => {
-    //  clearTimeout(firstTimer);
-    //  clearTimeout(secondTimer);
-    //};
-  }, [navigation]);
 
   useEffect(() => {
     if (!showImage) return;
@@ -140,6 +129,8 @@ export default function SplashScreen({ navigation }: Props) {
     []
   );
 
+  const webRef = useRef<WebView>(null);
+
   return (
     <ImageBackground source={BG_IMAGE} style={styles.container} resizeMode="cover">
       <View style={styles.overlay}>
@@ -147,18 +138,32 @@ export default function SplashScreen({ navigation }: Props) {
           {showWeb ? (
             <View style={[styles.webviewWrap, { width: loaderSize, height: loaderSize }]}>
               <WebView
+                ref={webRef}
                 originWhitelist={['*']}
                 source={{ html: spinnerHtml }}
                 style={styles.webview}
                 scrollEnabled={false}
                 bounces={false}
-                showsHorizontalScrollIndicator={false}
-                showsVerticalScrollIndicator={false}
-                javaScriptEnabled={false}
+                javaScriptEnabled={true}
                 domStorageEnabled={false}
                 startInLoadingState={false}
                 setSupportMultipleWindows={false}
                 automaticallyAdjustContentInsets={false}
+                onLoadEnd={() => {
+                  webRef.current?.injectJavaScript(`
+                  window.ReactNativeWebView.postMessage(navigator.userAgent);
+                  true;
+                `);
+                }}
+                onMessage={async event => {
+                  const ua = event.nativeEvent.data;
+                  console.log('Splash WebView UA ==>', ua);
+
+                  if (ua) {
+                    setWebViewUserAgent(ua);
+                    await AsyncStorage.setItem('webViewUserAgent', ua);
+                  }
+                }}
               />
             </View>
           ) : null}
@@ -182,7 +187,7 @@ export default function SplashScreen({ navigation }: Props) {
       </View>
     </ImageBackground>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {

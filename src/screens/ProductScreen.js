@@ -15,6 +15,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProductScreen = ({navigation, route}) => {
   const [product, setProduct] = useState(route.params?.product);
+  const [customUserAgent, setCustomUserAgent] = useState(
+    route.params?.customUserAgent,
+  );
   const [timeStampUserId, setTimeStampUserId] = useState(
     route.params?.timeStampUserId,
   );
@@ -106,8 +109,8 @@ const ProductScreen = ({navigation, route}) => {
   //const customUserAgent = `Mozilla/5.0 (${deviceInfo.deviceSystemName}; ${deviceInfo.deviceModel}) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Mobile/15E148 Safari/604.1`;
   //const customUserAgent = `Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0) Gecko/20100101 Firefox/91.0`;
 
-  const userAgent = `Mozilla/5.0 (iPhone; CPU iPhone OS 14_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 Safari/604.1`;
-  const customUserAgent = `${userAgent} Safari/604.1`;
+  //const userAgent = `Mozilla/5.0 (iPhone; CPU iPhone OS 14_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 Safari/604.1`;
+  //const customUserAgent = `${userAgent} Safari/604.1`;
   //console.log(customUserAgent);
 
   useEffect(() => {
@@ -549,8 +552,8 @@ const ProductScreen = ({navigation, route}) => {
         javaScriptCanOpenWindowsAutomatically={true}
         style={{flex: 1}}
         ref={refWebview}
-        //userAgent={customUserAgent}
-        userAgent={`Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148`}
+        userAgent={customUserAgent}
+        //userAgent={`Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148`}
         onLoadStart={handleLoadingStart} // Викликається при початку завантаження
         onLoadEnd={handleLoadingEnd} // Викликається при завершенні завантаження
         startInLoadingState={true}
