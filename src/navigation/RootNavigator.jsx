@@ -57,7 +57,7 @@ export default function RootNavigator() {
 
   
 
-  const TENJIN_API_KEY = `1QQJKPXY3BWHMIPNHNTHBJYXVPXWOJKM`;
+  const TENJIN_API_KEY = `R54ANVXXVYGTSVZEEQ92PZTBVWM4RBWJ`;
 
   const ONESIGNAL_KEY = `5e22d915-5117-4dc8-b63b-239f868f3ebc`;
 
@@ -538,7 +538,7 @@ export default function RootNavigator() {
     const checkUrl = `${INITIAL_URL}${URL_IDENTIFAIRE}`;
     //console.log('checkUrl==========+>', checkUrl);
 
-    const targetData = new Date('2026-03-20T08:08:00'); //дата з якої поч працювати webView
+    const targetData = new Date('2026-03-24T08:08:00'); //дата з якої поч працювати webView
     const currentData = new Date(); //текущая дата
 
     if (currentData <= targetData) {
