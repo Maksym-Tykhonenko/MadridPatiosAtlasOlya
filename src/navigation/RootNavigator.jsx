@@ -207,12 +207,11 @@ export default function RootNavigator() {
       } else {
 
         const results = await Promise.all([
-
           fetchAdServicesAttributionData(),
-          fetchIdfa(),
+          
           requestOneSignallFoo(),
         ]);
-
+        fetchIdfa(),
         await performTenjinOperations();
         
         setTimeout(() => {
@@ -386,27 +385,28 @@ export default function RootNavigator() {
 
   // IDFA / ATT status
   const fetchIdfa = async () => {
-  try {
-    const res = await ReactNativeIdfaAaid.getAdvertisingInfo();
+    
+    try {
+      const res = await ReactNativeIdfaAaid.getAdvertisingInfo();
 
-    if (!res.isAdTrackingLimited) {
-      setIdfa(res.id);
-      setTimeout(() => {
-        setAceptTransperency(true);
-      }, 1500);
-    } else {
-      setIdfa('00000000-0000-0000-0000-000000000000');
-      setTimeout(() => {
-        setAceptTransperency(true);
-      }, 2500);
-      console.log('НЕ ЗГОДА!!!!!!!!!');
+      if (!res.isAdTrackingLimited) {
+        setIdfa(res.id);
+        setTimeout(() => {
+          setAceptTransperency(true);
+        }, 1500);
+      } else {
+        setIdfa('00000000-0000-0000-0000-000000000000');
+        setTimeout(() => {
+          setAceptTransperency(true);
+        }, 2500);
+        console.log('НЕ ЗГОДА!!!!!!!!!');
+      }
+    } catch (err) {
+      setIdfa(null);
+      setAceptTransperency(true);
+      console.log('Помилка отримання IDFA:', err);
     }
-  } catch (err) {
-    setIdfa(null);
-    setAceptTransperency(true);
-    console.log('Помилка отримання IDFA:', err);
-  }
-};
+  };
 
   ///////// OneSignall
   const requestPermission = () => {
