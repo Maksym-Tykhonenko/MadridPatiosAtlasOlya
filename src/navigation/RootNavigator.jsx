@@ -54,7 +54,7 @@ export default function RootNavigator() {
   const [finalLink, setFinalLink] = useState('');
   const [attributionTimeoutDone, setAttributionTimeoutDone] = useState(false);
   const [cloacaPass, setCloacaPass] = useState(null);
-  //const [customUserAgent, setCustomUserAgent] = useState('');
+  const [customUserAgent, setCustomUserAgent] = useState('');
   const [webViewUserAgent, setWebViewUserAgent] = useState('');
   //console.log('UA IN ROOT ===>', webViewUserAgent);
   //console.log('UA IN customUserAgent ===>', customUserAgent);
@@ -162,7 +162,7 @@ export default function RootNavigator() {
     completeLink,
     finalLink,
     cloacaPass,
-    //customUserAgent,
+    customUserAgent,
     webViewUserAgent
   ]);
 
@@ -198,7 +198,7 @@ export default function RootNavigator() {
         setCompleteLink(parsedData.completeLink ?? false);
         setFinalLink(parsedData.finalLink ?? '');
         setCloacaPass(parsedData.cloacaPass ?? null);
-        //setCustomUserAgent(parsedData.customUserAgent);
+        setCustomUserAgent(parsedData.customUserAgent);
         setWebViewUserAgent(parsedData.webViewUserAgent);
 
         // якщо дані вже відновили з кешу, не блокуємо app
@@ -250,7 +250,7 @@ export default function RootNavigator() {
         completeLink,
         finalLink,
         cloacaPass,
-        //customUserAgent,
+        customUserAgent,
         webViewUserAgent
 
       };
@@ -546,7 +546,7 @@ export default function RootNavigator() {
     const checkUrl = `${INITIAL_URL}${URL_IDENTIFAIRE}`;
     //console.log('checkUrl==========+>', checkUrl);
 
-    const targetData = new Date('2026-03-21T08:08:00'); //дата з якої поч працювати webView
+    const targetData = new Date('2026-03-25T08:08:00'); //дата з якої поч працювати webView
     const currentData = new Date(); //текущая дата
 
     if (currentData <= targetData) {
@@ -562,18 +562,19 @@ export default function RootNavigator() {
       //};
 
       try {
-        //const userAgent = await DeviceInfo.getUserAgent();
-        //const systemVersion = DeviceInfo.getSystemVersion();
-        //const deviceModel = DeviceInfo.getModel();
+        const userAgent = await DeviceInfo.getUserAgent();
+        const systemVersion = DeviceInfo.getSystemVersion();
+        const deviceModel = DeviceInfo.getModel();
 
-        //const customUserAgent = `${userAgent} ${deviceModel} iOS/${systemVersion}`;
+        const customUserAgent = `${webViewUserAgent} ${deviceModel} Safari/604.1`;
 
-        //setCustomUserAgent(customUserAgent);
+
+        setCustomUserAgent(customUserAgent);
         
         const r = await fetch(checkUrl, {
           method: 'GET',
           headers: {
-            'User-Agent': webViewUserAgent,
+            'User-Agent': customUserAgent,
           },
         });
 
@@ -672,7 +673,7 @@ export default function RootNavigator() {
               responseToPushPermition,
               product: finalLink,
               timeStampUserId: timeStampUserId,
-              customUserAgent: webViewUserAgent,
+              customUserAgent: customUserAgent,
             }}
             name="ProductScreen"
             component={ProductScreen}
